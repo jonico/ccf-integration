@@ -1,0 +1,267 @@
+apply plugin: 'java'
+
+task initialExport << {
+    ant.taskdef(resource: 'org/tigris/subversion/svnant/svnantlib.xml') {
+	    classpath {
+	        fileset(dir: 'svnant-1.3.1/lib', includes: '*.jar')
+	    }
+	}
+	//TODO:Username and password should be parameterized
+	ant.svn(javahl: 'false', svnkit:'true',username: 'xxxx', password: 'xxxx', failonerror: 'false') {
+	    ant.export(srcUrl: 'https://ctf.open.collab.net/svn/repos/ccf/trunk/core', destPath: 'buildCCF/ccfcore')
+	    ant.export(srcUrl: 'https://ctf.open.collab.net/svn/repos/ccf/trunk/CCFMaster', destPath: 'buildCCF/CCFMaster')
+	    ant.export(srcUrl: 'https://ctf.open.collab.net/svn/repos/ccf/trunk/ccf-tomcat7', destPath: 'buildCCF/tomcat7')
+		
+	}
+}
+
+task buildCCFCore {
+	doFirst{
+		tasks.init.execute()
+	}
+	
+	doLast {
+		tasks.createmanifestHudson.execute() 
+		tasks.buildcore.execute()  
+		tasks.buildsample.execute()
+		tasks.buildtfplugin.execute()
+		if(project.hasProperty('participantName')){ // TODO: Need Johannes/selva to look into this approach
+			if(participantName == 'sfee'){		
+				tasks.buildsfeeplugin.execute()
+			} else if(participantName == 'qc') {
+				tasks.buildqcplugin.execute() 
+			}else if(participantName == 'cee') {
+				tasks.buildceeplugin.execute() 
+			}else if(participantName == 'swp') {
+				tasks.buildswpplugin.execute() 
+			}else if(participantName == 'tfs') {
+				tasks.buildtfsplugin.execute() 
+			}
+		} 		
+		//tasks.package.execute() 
+		tasks.customPack.execute()
+		tasks.deployHudson.execute()
+	}	
+	
+}
+
+task customPack <<  {
+	ant.copy(todir: "buildCCF/ccfcore/build/package/lib", overwrite: true) {
+	  fileset(dir: "buildCCF/ccfcore/build/jars"){
+	  	include(name:'*.jar')
+	  	exclude(name:'*JUnit*.jar')
+	  }
+	  fileset(dir: "buildCCF/ccfcore/config"){
+	   include(name:'log4j.*')
+	  }
+	  fileset(dir: "buildCCF/ccfcore/src/core/lib"){
+	   include(name:'obfuscate.*')
+	  }
+	}
+	ant.copy(todir: "buildCCF/ccfcore/build/package/lib/extlib",overwrite: true) {
+	  fileset(dir: "buildCCF/ccfcore/src/core/lib/openadaptor-3.4"){ include(name:'*.jar') }
+	  fileset(dir: "buildCCF/ccfcore/src/core/lib/servicewrapper"){	include(name:'*.jar') }
+	  fileset(dir: "buildCCF/ccfcore/src/core/lib/openadaptor-3.4/3rdparty"){include(name:'*.jar')  }
+	  fileset(dir: "buildCCF/ccfcore/src/plugins/TF/lib"){include(name:'*.jar')  }
+	}
+	  
+	if(project.hasProperty('participantName')){
+	 	if(participantName == 'sfee'){
+		 	ant.copy(todir: "buildCCF/ccfcore/build/package/lib/extlib",overwrite: true) {
+		  		fileset(dir: "buildCCF/ccfcore/src/plugins/SFEE/v44/lib"){include(name:'*.jar')  }
+		  	}
+	  	} else if(participantName == 'cee') {
+	  		ant.copy(todir: "buildCCF/ccfcore/build/package/lib/extlib",overwrite: true) {	  
+	  			fileset(dir: "buildCCF/ccfcore/src/plugins/CEE/ProjectTracker/v50/lib"){include(name:'*.jar')  }
+	  		}
+	  	}else if(participantName == 'qc') {	
+	  		ant.copy(todir: "buildCCF/ccfcore/build/package/lib/extlib",overwrite: true) {  
+	  			fileset(dir: "buildCCF/ccfcore/src/plugins/HPQC/lib/jacob"){include(name:'*.*')  }
+	  		}
+	  	}else if(participantName == 'swp') {	
+	  		ant.copy(todir: "buildCCF/ccfcore/build/package/lib/extlib",overwrite: true) {  
+	  			fileset(dir: "buildCCF/ccfcore/src/plugins/SWP/lib"){include(name:'*.jar')  }
+	  		}
+	  	}else if(participantName == 'tfs') {	
+	  		ant.copy(todir: "buildCCF/ccfcore/build/package/lib/extlib",overwrite: true) {  
+	  			fileset(dir: "buildCCF/ccfcore/src/plugins/TFS/lib"){include(name:'*.jar')  }
+	  		}
+	  	}
+	 }
+	 
+	 ant.copy(todir: "buildCCF/ccfcore/build/package/lib/extlib/native/windows-x86-32",overwrite: true) {	  
+	 	fileset(dir: "buildCCF/ccfcore/src/core/lib/servicewrapper/windows-x86-32"){include(name:'*.dll')  }
+	 }
+	 ant.copy(todir: "buildCCF/ccfcore/build/package/lib/extlib/native/windows-x86-64",overwrite: true) {	  
+	 	fileset(dir: "buildCCF/ccfcore/src/core/lib/servicewrapper/windows-x86-32"){include(name:'*.dll')  }
+	 }
+	 ant.copy(todir: "buildCCF/ccfcore/build/package/lib/extlib/native/linux-x86-32",overwrite: true) {	  
+	 	fileset(dir: "buildCCF/ccfcore/src/core/lib/servicewrapper/linux-x86-32"){include(name:'*.so')  }
+	 }
+	 ant.copy(todir: "buildCCF/ccfcore/build/package/lib/extlib/native/linux-x86-64",overwrite: true) {	  
+	 	fileset(dir: "buildCCF/ccfcore/src/core/lib/servicewrapper/linux-x86-64"){include(name:'*.so')  }
+	 }
+	 
+	 
+	 ant.copy(todir: "buildCCF/ccfcore/build/package/samples",overwrite: true) {	  
+	 	fileset(dir: "buildCCF/ccfcore/samples"){
+	 		include(name:'IntegrationScenarios/**/*')
+	 		include(name:'centralCCFDatabase/**/*')
+	 		include(name:'IntegrationScenarios/**/*')
+	 		include(name:'QCPT/**/*')
+	 	}
+	 }
+	 
+	 if(project.hasProperty('participantName')){
+	 	if(participantName == 'qc') {	
+	  		ant.copy(todir: "buildCCF/ccfcore/build/package/samples",overwrite: true) {	  
+			 	fileset(dir: "buildCCF/ccfcore/samples"){
+			 		include(name:'QCTF/**/*')
+			 	}
+	 		}
+	 		ant.copy(todir: "buildCCF/ccfcore/build/package/scripts",overwrite: true) {	  
+			 	fileset(dir: "buildCCF/ccfcore/scripts"){
+			 		include(name:'**/*')
+			 	}
+	 		}
+	  	}else if(participantName == 'swp') {	
+	  		ant.copy(todir: "buildCCF/ccfcore/build/package/samples",overwrite: true) {	  
+			 	fileset(dir: "buildCCF/ccfcore/samples"){
+			 		include(name:'TFSWP/**/*')
+			 	}
+	 		}
+	  	}else if(participantName == 'tfs') {	
+	  		ant.copy(todir: "buildCCF/ccfcore/build/package/samples",overwrite: true) {	  
+			 	fileset(dir: "buildCCF/ccfcore/samples"){
+			 		include(name:'TFSTF/**/*')
+			 	}
+	 		}
+	  	}
+	 }
+	 
+	 ant.copy(todir: "buildCCF/ccfcore/build/package",overwrite: true) {	  
+	 	fileset(dir: "buildCCF/ccfcore"){
+	 		include(name:'README-PT-PLUGIN.txt')
+	 		include(name:'README.txt')
+	 		include(name:'LICENSE')
+	 		include(name:'NOTICE')
+	 		include(name:'ccfcoreversion.properties')
+	 		include(name:'ccfcoredefaultconfig.xml')
+	 	}
+	 }
+	if(project.hasProperty('participantName')){
+		if(participantName == 'swp'){
+			ant.copy(todir: "buildCCF/ccfcore/build/package/fieldmappings/FORWARD/core",overwrite: true) {	  
+			 	fileset(dir: "buildCCF/ccfcore/fieldmappings/FORWARD/core"){
+			 		include(name:'**/*')
+			 	}
+			 }
+			 ant.copy(todir: "buildCCF/ccfcore/build/package/fieldmappings/REVERSE/core",overwrite: true) {	  
+			 	fileset(dir: "buildCCF/ccfcore/fieldmappings/REVERSE/core"){
+			 		include(name:'**/*')
+			 	}
+			 }
+		}else{
+			FileCollection fieldMappingDirs = files('buildCCF/ccfcore/fieldmappings/FORWARD/prepopulatedLandscapeTemplates', 
+														'buildCCF/ccfcore/fieldmappings/REVERSE/prepopulatedLandscapeTemplates')
+			fieldMappingDirs.each {File file ->
+				def direction =  new File(file.getParent()).name
+				def dirName
+				if(direction == 'FORWARD'){
+					dirName = 'buildCCF/ccfcore/build/package/fieldmappings/FORWARD/prepopulatedLandscapeTemplates/'
+				}else {
+					dirName = 'buildCCF/ccfcore/build/package/fieldmappings/REVERSE/prepopulatedLandscapeTemplates/'
+				}
+				file.listFiles().findAll {
+					if(it.name.toLowerCase().contains(participantName)){ //TODO: later Need to check how contains works 
+						def filePath = it.getCanonicalPath()
+						intoDirName = dirName + it.name
+				 		copy{	
+				 		 	from(filePath){
+				 		 		include '**/*'
+				 		 	}
+				 		 	into intoDirName
+				 		}
+					}
+				 }
+			}
+		} 
+	}	
+}
+
+customPack.doFirst {
+	delete {
+		delete 'buildCCF/ccfcore/build/package'
+	}
+	FileCollection packageDir = files('buildCCF/ccfcore/build/package/lib','buildCCF/ccfcore/build/package/lib/extlib',
+								'buildCCF/ccfcore/build/package/lib/extlib/native/windows-x86-32',
+								'buildCCF/ccfcore/build/package/lib/extlib/native/windows-x86-64',
+								'buildCCF/ccfcore/build/package/lib/extlib/native/linux-x86-32',
+								'buildCCF/ccfcore/build/package/lib/extlib/native/linux-x86-64','buildCCF/ccfcore/build/package/samples',
+								'buildCCF/ccfcore/build/package/fieldmappings/FORWARD','buildCCF/ccfcore/build/package/fieldmappings/REVERSE',
+								'buildCCF/ccfcore/build/package/scripts')
+	packageDir.each {File file -> file.mkdirs()}
+}
+
+task copyCore {
+	doFirst {
+		delete {
+			delete 'buildCCF/CCFMaster/src/main/webapp/WEB-INF/ccfcore/ccfcore.zip'
+		}
+	}
+	
+	doLast{
+		copy{
+			from('buildCCF/ccfcore/deploy/') {
+	       		include 'CollabNet Connector Framework-2.0.1-*.zip'
+	       		rename 'CollabNet Connector Framework(.*)', 'ccfcore.zip'
+	    	}
+	    	into 'buildCCF/CCFMaster/src/main/webapp/WEB-INF/ccfcore/'
+		}
+	}
+}
+
+task buildCCFMaster << {
+	//TODO: move applicationContext-genericParticipant*.xml and pom.xml
+    ant.exec(outputproperty:"cmdOut", executable: '/CCF/Sts-ccf/apache-maven-3.0.3/bin/mvn.bat', dir: 'buildCCF/CCFMaster') {
+        arg(line: 'clean install -Dmaven.test.skip=true')
+ 	}
+}
+
+task copyandzipWar << {
+	 ant.zip(destfile: 'distributions/apache-tomcat-7.0.14.zip') {
+        fileset(dir: 'buildCCF/tomcat7/apache-tomcat-7.0.14/') 
+    }
+}
+
+copyandzipWar.doFirst {
+	copy{
+		from('buildCCF/CCFMaster/target/') {
+	   		include 'CCFMaster.war'
+	   	}
+	   	into 'buildCCF/tomcat7/apache-tomcat-7.0.14/webapps/'
+	}
+}
+
+task main<< {
+    //tasks.initialExport.execute()     commenting this to test only few task
+	File coreBuildFile = file('buildCCF/ccfcore/build.xml')
+	if(coreBuildFile.exists()){
+		ant.importBuild(coreBuildFile)
+		tasks.buildCCFCore.execute()
+		tasks.copyCore.execute() 
+	}
+    tasks.buildCCFMaster.execute() 
+    tasks.copyandzipWar.execute() 
+}
+
+main.doFirst {	
+	mkdir('buildCCF')
+	mkdir('distributions')
+}
+
+/*main.doLast {
+	delete {
+		delete 'buildCCF'
+	}
+}*/
