@@ -1,5 +1,7 @@
 apply plugin: 'java'
 
+def defaultParticipantList =['qc','swp']
+
 task initialExport << {
     ant.taskdef(resource: 'org/tigris/subversion/svnant/svnantlib.xml') {
 	    classpath {
@@ -11,7 +13,6 @@ task initialExport << {
 	    ant.export(srcUrl: 'https://ctf.open.collab.net/svn/repos/ccf/trunk/core', destPath: 'buildCCF/ccfcore')
 	    ant.export(srcUrl: 'https://ctf.open.collab.net/svn/repos/ccf/trunk/CCFMaster', destPath: 'buildCCF/CCFMaster')
 	    ant.export(srcUrl: 'https://ctf.open.collab.net/svn/repos/ccf/trunk/ccf-tomcat7', destPath: 'buildCCF/tomcat7')
-		
 	}
 }
 
@@ -25,7 +26,7 @@ task buildCCFCore {
 		tasks.buildcore.execute()  
 		tasks.buildsample.execute()
 		tasks.buildtfplugin.execute()
-		if(project.hasProperty('participantName')){ // TODO: Need Johannes/selva to look into this approach
+		defaultParticipantList.each{String participantName ->
 			if(participantName == 'sfee'){		
 				tasks.buildsfeeplugin.execute()
 			} else if(participantName == 'qc') {
@@ -37,7 +38,7 @@ task buildCCFCore {
 			}else if(participantName == 'tfs') {
 				tasks.buildtfsplugin.execute() 
 			}
-		} 		
+		}
 		//tasks.package.execute() 
 		tasks.customPack.execute()
 		tasks.deployHudson.execute()
@@ -65,7 +66,7 @@ task customPack <<  {
 	  fileset(dir: "buildCCF/ccfcore/src/plugins/TF/lib"){include(name:'*.jar')  }
 	}
 	  
-	if(project.hasProperty('participantName')){
+	defaultParticipantList.each{ String participantName ->
 	 	if(participantName == 'sfee'){
 		 	ant.copy(todir: "buildCCF/ccfcore/build/package/lib/extlib",overwrite: true) {
 		  		fileset(dir: "buildCCF/ccfcore/src/plugins/SFEE/v44/lib"){include(name:'*.jar')  }
@@ -112,7 +113,7 @@ task customPack <<  {
 	 	}
 	 }
 	 
-	 if(project.hasProperty('participantName')){
+	 defaultParticipantList.each{ String participantName ->
 	 	if(participantName == 'qc') {	
 	  		ant.copy(todir: "buildCCF/ccfcore/build/package/samples",overwrite: true) {	  
 			 	fileset(dir: "buildCCF/ccfcore/samples"){
@@ -149,7 +150,7 @@ task customPack <<  {
 	 		include(name:'ccfcoredefaultconfig.xml')
 	 	}
 	 }
-	if(project.hasProperty('participantName')){
+	defaultParticipantList.each{ String participantName ->
 		if(participantName == 'swp'){
 			ant.copy(todir: "buildCCF/ccfcore/build/package/fieldmappings/FORWARD/core",overwrite: true) {	  
 			 	fileset(dir: "buildCCF/ccfcore/fieldmappings/FORWARD/core"){
@@ -244,6 +245,9 @@ copyandzipWar.doFirst {
 }
 
 task main<< {
+	if(project.hasProperty('participantName')){
+		defaultParticipantList.putAt(defaultParticipantList.size, participantName)
+	}
     //tasks.initialExport.execute()     commenting this to test only few task
 	File coreBuildFile = file('buildCCF/ccfcore/build.xml')
 	if(coreBuildFile.exists()){
