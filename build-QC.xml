@@ -16,12 +16,7 @@
  limitations under the License.
 -->
 
-<project basedir="." default="deployHudson" name="CCFJ">	
-	<property name="ccfcoresvnurl" value="https://ctf.open.collab.net/svn/repos/ccf/trunk/core" />
-	<property name="ccfmastersvnurl" value="https://ctf.open.collab.net/svn/repos/ccf/trunk/CCFMaster" />
-	<property name="tomcatsvnurl" value="https://ctf.open.collab.net/svn/repos/ccf/trunk/ccf-tomcat7" />
-	<property name="svnusername" value="balajikandan" />
-	<property name="svnpassword" value="1234qwer$" />
+<project basedir="." default="deployHudson" name="CCFJ">
 	
 	<property environment="env" />
 	<property name="junit.output.dir" value="junit-reports" />

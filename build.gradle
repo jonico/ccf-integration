@@ -49,20 +49,22 @@ task copyCCFCore {
 }
 
 task buildCCFMaster << {
-	if(project.hasProperty('genericParticipantConfigFile')){
-		File genericParticipantConfigFile = file(genericParticipantConfigFile)
+	if(ant.genericParticipantConfigFile != null && ant.genericParticipantConfigFile != ""){
+		File genericParticipantConfigFile = file(ant.genericParticipantConfigFile)
 		if(genericParticipantConfigFile.exists()){
 			copy{	
 			 	from(genericParticipantConfigFile.getCanonicalPath()){
-					include 'applicationContext-development-*.xml'
+					include '*.xml'
+					rename '(.*)', 'applicationContext-development-genericParticipant.xml'
 				}
 				into 'buildCCF/CCFMaster/src/main/resources/META-INF/spring'
 			}
 			
 		}
 	}
-	if(project.hasProperty('customPOMFile')){
-		File customPOM = file(customPOMFile)
+	
+	if(ant.customPOMFile != null && ant.customPOMFile != ""){
+		File customPOM = file(ant.customPOMFile)
 		if(customPOM.exists()){
 			copy{	
 			 	from(customPOM.getCanonicalPath()){
@@ -74,7 +76,7 @@ task buildCCFMaster << {
 		}
 	}
 	
-    ant.exec(outputproperty:"cmdOut", executable:mvnExecutablePath, dir: 'buildCCF/CCFMaster') {
+    ant.exec(outputproperty:"cmdOut", executable:ant.mvnExecutablePath, dir: 'buildCCF/CCFMaster') {
         arg(line: 'clean install -Dmaven.test.skip=true')
  	}
 }
@@ -96,16 +98,23 @@ task copyandzipWar {
 }
 
 task mainBuild<< {
-	File coreBuildFile = file(ccfCoreBuildFile)
-	if(coreBuildFile.exists()){
-		ant.importBuild(coreBuildFile)
-    	tasks.exportCCFProjects.execute()
-		tasks.buildCCFCore.execute()
-		tasks.copyCCFCore.execute() 
-	}
-    tasks.buildCCFMaster.execute() 
-    tasks.copyandzipWar.execute() 
+	if(project.hasProperty('participantName')){
+		def participantPropFile = "gradle-"+participantName+"-Config.properties"
+		ant.loadproperties(srcfile:participantPropFile)
+		File coreBuildFile = file(ant.ccfCoreBuildFile)
+		if(coreBuildFile.exists()){
+			ant.importBuild(coreBuildFile)
+	    	tasks.exportCCFProjects.execute()
+			tasks.buildCCFCore.execute()
+			tasks.copyCCFCore.execute() 
+		}
+	    tasks.buildCCFMaster.execute() 
+	    tasks.copyandzipWar.execute()
+    
+	} 
 }
+
+mainBuild.onlyIf{ project.hasProperty('participantName')}
 
 mainBuild.doFirst {	
 	mkdir('buildCCF')
