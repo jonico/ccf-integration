@@ -49,8 +49,8 @@ task copyCCFCore {
 }
 
 task buildCCFMaster << {
-	if(ant.genericParticipantConfigFile != null && ant.genericParticipantConfigFile != ""){
-		File genericParticipantConfigFile = file(ant.genericParticipantConfigFile)
+	if(ant.customGenericParticipantConfigFile != null && ant.customGenericParticipantConfigFile != ""){
+		File genericParticipantConfigFile = file(ant.customGenericParticipantConfigFile)
 		if(genericParticipantConfigFile.exists()){
 			copy{	
 			 	from(genericParticipantConfigFile.getCanonicalPath()){
@@ -58,8 +58,7 @@ task buildCCFMaster << {
 					rename '(.*)', 'applicationContext-development-genericParticipant.xml'
 				}
 				into 'buildCCF/CCFMaster/src/main/resources/META-INF/spring'
-			}
-			
+			}			
 		}
 	}
 	
@@ -99,7 +98,7 @@ task copyandzipWar {
 
 task mainBuild<< {
 	if(project.hasProperty('participantName')){
-		def participantPropFile = "gradle-"+participantName+"-Config.properties"
+		def participantPropFile = "plugins/"+participantName+"/gradleConfig-"+participantName+".properties"
 		ant.loadproperties(srcfile:participantPropFile)
 		File coreBuildFile = file(ant.ccfCoreBuildFile)
 		if(coreBuildFile.exists()){
