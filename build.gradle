@@ -98,6 +98,11 @@ task copyandzipWar {
 
 task mainBuild<< {
 	if(project.hasProperty('participantName')){
+		/*
+		*custom properties files are not supported in gradle, please refer the issue ticket
+		*http://issues.gradle.org/browse/GRADLE-871, http://issues.gradle.org/browse/GRADLE-1419	
+		*
+		*/
 		def participantPropFile = "plugins/"+participantName+"/gradleConfig-"+participantName+".properties"
 		ant.loadproperties(srcfile:participantPropFile)
 		File coreBuildFile = file(ant.ccfCoreBuildFile)

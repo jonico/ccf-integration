@@ -4,6 +4,10 @@ apply plugin: 'maven'
 group="com.collabnet.ccf.ccfmaster.gp"
 version="0.1.0"
 
+jar {  
+      appendix = 'plugin' 
+} 
+
 repositories {
 	mavenLocal()
     maven {  url "http://maven.springframework.org/release"  }
