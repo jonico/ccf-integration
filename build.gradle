@@ -75,7 +75,7 @@ task buildCCFMaster << {
 		}
 	}
 	
-    ant.exec(outputproperty:"cmdOut", executable:ant.mvnExecutablePath, dir: 'buildCCF/CCFMaster') {
+    ant.exec(outputproperty:"cmdOut", executable:mvnExecutablePath, dir: 'buildCCF/CCFMaster') {
         arg(line: 'clean install -Dmaven.test.skip=true')
  	}
 }
@@ -94,6 +94,14 @@ task copyandzipWar {
 	        fileset(dir: 'buildCCF/tomcat7/apache-tomcat-7.0.14/') 
 	    }
     }
+}
+
+task buildGPPlugin<< {
+	if(buildParticipant && project.hasProperty('participantName')){
+		ant.exec(outputproperty:"cmdOut", executable:gradleExecutablePath, dir: 'plugins/'+participantName) {
+	        arg(line: 'install')
+	 	}
+ 	}
 }
 
 task mainBuild<< {
@@ -123,6 +131,10 @@ mainBuild.onlyIf{ project.hasProperty('participantName')}
 mainBuild.doFirst {	
 	mkdir('buildCCF')
 	mkdir('distributions')
+	
+	if(project.hasProperty('buildParticipant')){
+		tasks.buildGPPlugin.execute()
+	}
 }
 
 /*mainBuild.doLast {
