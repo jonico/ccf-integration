@@ -75,9 +75,10 @@ task buildCCFMaster << {
 		}
 	}
 	
-    ant.exec(outputproperty:"cmdOut", executable:mvnExecutablePath, dir: 'buildCCF/CCFMaster') {
+    ant.exec(outputproperty:"mavenBuildCCFMaster", executable:mvnExecutablePath, dir: 'buildCCF/CCFMaster') {
         arg(line: 'clean install -Dmaven.test.skip=true')
  	}
+ 	println ant.mavenBuildCCFMaster
 }
 
 task copyandzipWar {
@@ -97,33 +98,53 @@ task copyandzipWar {
 }
 
 task buildGPPlugin<< {
-	if(buildParticipant && project.hasProperty('participantName')){
-		ant.exec(outputproperty:"cmdOut", executable:gradleExecutablePath, dir: 'plugins/'+participantName) {
-	        arg(line: 'install')
-	 	}
- 	}
+	ant.exec(outputproperty:"gradleBuildParticipant", executable:gradleExecutablePath, dir: 'plugins/'+participantName) {
+	       arg(line: 'install')
+	}
+ 	println ant.gradleBuildParticipant
 }
 
-task mainBuild<< {
+task loadPropertyValues<< {
 	if(project.hasProperty('participantName')){
-		/*
+	   /**
 		*custom properties files are not supported in gradle, please refer the issue ticket
 		*http://issues.gradle.org/browse/GRADLE-871, http://issues.gradle.org/browse/GRADLE-1419	
 		*
 		*/
 		def participantPropFile = "plugins/"+participantName+"/gradleConfig-"+participantName+".properties"
 		ant.loadproperties(srcfile:participantPropFile)
-		File coreBuildFile = file(ant.ccfCoreBuildFile)
-		if(coreBuildFile.exists()){
-			ant.importBuild(coreBuildFile)
-	    	tasks.exportCCFProjects.execute()
-			tasks.buildCCFCore.execute()
-			tasks.copyCCFCore.execute() 
-		}
-	    tasks.buildCCFMaster.execute() 
-	    tasks.copyandzipWar.execute()
-    
-	} 
+	}
+}
+
+task importAndBuildCore<< {
+	File coreBuildFile = file(ant.ccfCoreBuildFile)
+	if(coreBuildFile.exists()){
+		ant.importBuild(coreBuildFile)
+		tasks.buildCCFCore.execute()
+		tasks.copyCCFCore.execute() 
+	}
+}
+
+task buildCCFMasterGPJar<< {
+	ant.exec(outputproperty:"mavenBuildGPJar", executable:mvnExecutablePath, dir: 'buildCCF/CCFMaster') {
+        arg(line: 'clean package  -DbuildGenericParticipantJar=true -Dmaven.test.skip=true')
+ 	}
+ 	println ant.mavenBuildGPJar
+ 	File gpJar = file('buildCCF/CCFMaster/target/CCFMaster-GenericParticipant.jar')
+	if(gpJar.exists()){
+		copy{	
+			 	from(gpJar.getCanonicalPath()){
+					include '*.jar'
+					rename 'CCFMaster-GenericParticipant(.*)', 'CCFMaster-'+participantName+'-GenericParticipant.jar'
+				}
+				into 'lib'
+			}
+	}
+}
+task mainBuild<< {
+	 tasks.importAndBuildCore.execute() 
+	 tasks.buildCCFMaster.execute() 
+	 tasks.copyandzipWar.execute() 
 }
 
 mainBuild.onlyIf{ project.hasProperty('participantName')}
@@ -131,8 +152,11 @@ mainBuild.onlyIf{ project.hasProperty('participantName')}
 mainBuild.doFirst {	
 	mkdir('buildCCF')
 	mkdir('distributions')
+	tasks.loadPropertyValues.execute() 
+	tasks.exportCCFProjects.execute() 
 	
-	if(project.hasProperty('buildParticipant')){
+	if(project.hasProperty('buildParticipant') && buildParticipant ){
+		tasks.buildCCFMasterGPJar.execute()
 		tasks.buildGPPlugin.execute()
 	}
 }
