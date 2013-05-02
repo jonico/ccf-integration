@@ -53,7 +53,7 @@
 	
 	<bean id="urlParticipantConfig" class="com.collabnet.ccf.ccfmaster.server.domain.CCFCoreProperty">
 		<property name="name" value="ccf.participant.tfs.url"/>
-		<property name="labelName" value="TeamFoundation Server Endpoint URL"/>
+		<property name="labelName" value="Team Foundation Server Endpoint URL"/>
 		<property name="systemKind" value="GENERIC"/>
 		<property name="type" value="STRING"/>
 		<property name="displayInHTML" value="true"/>

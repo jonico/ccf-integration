@@ -155,7 +155,7 @@ mainBuild.doFirst {
 	tasks.loadPropertyValues.execute() 
 	tasks.exportCCFProjects.execute() 
 	
-	if(project.hasProperty('buildParticipant') && buildParticipant ){
+	if(project.hasProperty('buildGenericParticipantWebPlugin') && buildGenericParticipantWebPlugin ){
 		tasks.buildCCFMasterGPJar.execute()
 		tasks.buildGPPlugin.execute()
 	}

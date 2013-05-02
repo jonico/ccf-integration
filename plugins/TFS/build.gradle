@@ -16,7 +16,7 @@ repositories {
 }
 
 dependencies {
-	compile files('../../lib/CCFMaster-GenericParticipant.jar')
+	compile files('../../lib/CCFMaster-TFS-GenericParticipant.jar')
     compile group: 'org.springframework', name: 'spring-core', version: '3.0.5.RELEASE'
     compile group: 'org.springframework', name: 'spring-context', version: '3.0.5.RELEASE'
     compile group: 'com.microsoft.tfs', name: 'sdk', version: '10.1.0'
