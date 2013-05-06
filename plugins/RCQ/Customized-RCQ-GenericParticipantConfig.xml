@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+<bean id="genericParticipant" class="com.collabnet.ccf.ccfmaster.gp.model.GenericParticipantFacade" >
+	<!-- name property should hold full name of the participant (e.g. "HP Quality Center","ScrumWorks Pro");
+	 this value is used to display  in the admin screen menu-->
+	<property name="name" value="Rational ClearQuest"/>
+	<!-- prefix property should hold short Name of the participant (e.g. "QC","SWP");
+	 this value is used set as participant perfix and systemId ; Also used to display in header labels-->
+	<property name="prefix" value="RCQ"/>
+	<property name="genericParticipantConfigItemFactory" ref="genericParticipantConfigItemFactory"/>
+	<property name="genericParticipantRMDFactory" ref="genericParticipantRMDFactory"/>
+</bean>
+	
+<bean id="userNameLandscapeConfig" class="com.collabnet.ccf.ccfmaster.server.domain.CCFCoreProperty">
+       <!--  name property should be unique  -->
+       <property name="name" value="ccf.landscape.rcq.username"/>
+       <property name="labelName" value="Clearquest Username"/>
+       <property name="systemKind" value="GENERIC"/>
+       <property name="type" value="STRING"/>
+       <property name="displayInHTML" value="true"/>
+</bean>
+              
+<bean id="passwordLandscapeConfig" class="com.collabnet.ccf.ccfmaster.server.domain.CCFCoreProperty">
+       <!--  name property should be unique  -->
+       <property name="name" value="ccf.landscape.rcq.password"/>
+       <property name="labelName" value="Clearquest Password"/>
+       <property name="systemKind" value="GENERIC"/>
+       <property name="type" value="PASSWORD"/>
+       <property name="displayInHTML" value="true"/>
+</bean>
+
+<bean id="genericParticipantConfigItemFactory" class="com.collabnet.ccf.ccfmaster.gp.model.GenericParticipantConfigItemFactory">	
+	<property name="participantFieldList">
+		<list value-type="com.collabnet.ccf.ccfmaster.server.domain.CCFCoreProperty">
+		</list>
+	</property>
+	<property name="landscapeFieldList">
+		<list value-type="com.collabnet.ccf.ccfmaster.server.domain.CCFCoreProperty">
+			<ref bean="userNameLandscapeConfig" />
+			<ref bean="passwordLandscapeConfig" />
+		</list>
+	</property>
+</bean>
+
+<bean id="rcqSchemaNameConfig" class="com.collabnet.ccf.ccfmaster.server.domain.CCFCoreProperty">
+       <!--  name property should be unique  -->
+       <property name="name" value="ccf.participant.rcq.schema"/>
+       <property name="labelName" value="Clearquest Schema"/>
+       <property name="systemKind" value="GENERIC"/>
+       <property name="type" value="STRING"/>
+       <property name="displayInHTML" value="true"/>
+</bean>
+
+<bean id="rcqIssueTypeConfig" class="com.collabnet.ccf.ccfmaster.server.domain.CCFCoreProperty">
+       <!--  name property should be unique  -->
+       <property name="name" value="issuetype"/>
+       <property name="labelName" value="Clearquest Issue Type"/>
+       <property name="systemKind" value="GENERIC"/>
+       <property name="type" value="STRING"/>
+       <property name="displayInHTML" value="true"/>
+</bean>
+
+<bean id="rcqStatusFieldNameConfig" class="com.collabnet.ccf.ccfmaster.server.domain.CCFCoreProperty">
+       <!--  name property should be unique  -->
+       <property name="name" value="statusFieldName"/>
+       <property name="labelName" value="Clearquest Status Field Name"/>
+       <property name="systemKind" value="GENERIC"/>
+       <property name="type" value="STRING"/>
+       <property name="displayInHTML" value="true"/>
+</bean>
+
+<bean id="rcqDatabaseNameConfig" class="com.collabnet.ccf.ccfmaster.server.domain.CCFCoreProperty">
+       <!--  name property should be unique  -->
+       <property name="name" value="databaseName"/>
+       <property name="labelName" value="Clearquest Database (Project) Name"/>
+       <property name="systemKind" value="GENERIC"/>
+       <property name="type" value="STRING"/>
+       <property name="displayInHTML" value="true"/>
+</bean>
+
+<bean id="rcqHistoryFieldNameConfig" class="com.collabnet.ccf.ccfmaster.server.domain.CCFCoreProperty">
+       <!--  name property should be unique  -->
+       <property name="name" value="historyFieldName"/>
+       <property name="labelName" value="Clearquest History Field Name"/>
+       <property name="systemKind" value="GENERIC"/>
+       <property name="type" value="STRING"/>
+       <property name="displayInHTML" value="true"/>
+</bean>
+
+
+<bean id="genericParticipantRMDFactory" class="com.collabnet.ccf.ccfmaster.gp.model.GenericParticipantRMDFactory">	
+<property name="participantSelectorFieldList">
+	<list value-type="com.collabnet.ccf.ccfmaster.server.domain.CCFCoreProperty">
+		<ref bean="rcqSchemaNameConfig" />
+		<ref bean="rcqDatabaseNameConfig" />
+		<ref bean="rcqIssueTypeConfig" />
+		<ref bean="rcqStatusFieldNameConfig" />
+		<ref bean="rcqHistoryFieldNameConfig" />
+	</list>
+</property>
+<property name="customParticipantRMD" ref="customParticipantRMD"/>
+</bean>
+
+<bean id="customParticipantRMD" class="com.collabnet.ccf.ccfmaster.gp.web.rmd.DefaultCustomRMDParticipant"/>
+
+</beans>
