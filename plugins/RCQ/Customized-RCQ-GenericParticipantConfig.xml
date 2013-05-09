@@ -70,8 +70,9 @@
        <property name="name" value="statusFieldName"/>
        <property name="labelName" value="Clearquest Status Field Name"/>
        <property name="systemKind" value="GENERIC"/>
+       <property name="value" value="status"/>
        <property name="type" value="STRING"/>
-       <property name="displayInHTML" value="true"/>
+       <property name="displayInHTML" value="false"/>
 </bean>
 
 <bean id="rcqDatabaseNameConfig" class="com.collabnet.ccf.ccfmaster.server.domain.CCFCoreProperty">
@@ -86,10 +87,11 @@
 <bean id="rcqHistoryFieldNameConfig" class="com.collabnet.ccf.ccfmaster.server.domain.CCFCoreProperty">
        <!--  name property should be unique  -->
        <property name="name" value="historyFieldName"/>
-       <property name="labelName" value="Clearquest History Field Name"/>
+       <property name="labelName" value="Clearquest History Field Name (inactive)"/>
        <property name="systemKind" value="GENERIC"/>
        <property name="type" value="STRING"/>
-       <property name="displayInHTML" value="true"/>
+       <property name="value" value="history"/>
+       <property name="displayInHTML" value="false"/>
 </bean>
 
 
