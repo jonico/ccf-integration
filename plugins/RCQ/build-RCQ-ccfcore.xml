@@ -256,13 +256,12 @@
 			</fileset>
 		</copy>
 		<copy todir="../../buildCCF/ccfcore/build/package">
-			<fileset dir=".">
+			<fileset dir="../../buildCCF/ccfcore">
 				<include name="README-PT-PLUGIN.txt" />
 				<include name="README.txt" />
 				<include name="LICENSE" />
 				<include name="NOTICE" />
 				<include name="ccfcoreversion.properties" />
-				<include name="ccfcoredefaultconfig.xml"/>
 			</fileset>
 		</copy>
 	</target>
