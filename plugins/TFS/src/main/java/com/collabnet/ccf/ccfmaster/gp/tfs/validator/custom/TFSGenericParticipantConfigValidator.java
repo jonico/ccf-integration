@@ -36,9 +36,9 @@ public class TFSGenericParticipantConfigValidator implements IGenericParticipant
 			if(StringUtils.isEmpty(value)){
 				errors.rejectValue(errorElementName+"[" + i + "].value", "Cannot be blank. Please enter a value","Blank value not accepted");
 			} else if(!ValidatorUtils.validateType( value, type )){
-				errors.rejectValue(errorElementName+"[" + i + "].value","Value should be numeric"); // Numeric validation message will always be expected
+				errors.rejectValue(errorElementName+"[" + i + "].value","","Value should be numeric"); // Numeric validation message will always be expected
 			} else if(!ValidatorUtils.findMatch(conditionalRegex, value)){
-				errors.rejectValue(errorElementName+"[" + i + "].value","Value given is not matching conditional regex");
+				errors.rejectValue(errorElementName+"[" + i + "].value","","Value given is not matching conditional regex");
 			}
 		}
 	}
