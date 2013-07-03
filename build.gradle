@@ -24,10 +24,27 @@ task buildCCFCore {
 		tasks.buildsample.execute()
 		tasks.buildtfplugin.execute()
 		tasks.buildParticipantplugin.execute()
+		tasks.copyCoreConfigFile.execute()
 		tasks.package.execute()
 		tasks.deployHudson.execute()
 	}	
 	
+}
+
+task copyCoreConfigFile <<{
+	if(project.hasProperty('participantName')){
+	def coreConfigFileName = "plugins/"+participantName+"/ccfcoredefaultconfig-"+participantName+".xml"
+	File coreConfigFile = file(coreConfigFileName)
+		if(coreConfigFile.exists()){
+			copy{	
+			 	from(coreConfigFile.getCanonicalPath()){
+					include 'ccfcoredefaultconfig*.xml'
+					rename 'ccfcoredefaultconfig(.*)', 'ccfcoredefaultconfig.xml'
+				}
+				into 'buildCCF/ccfcore'
+			}			
+		}
+	}
 }
 
 task copyCCFCore {
