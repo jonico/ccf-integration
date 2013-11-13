@@ -1,0 +1,46 @@
+Project:
+	CCF-Integration is a gradle based project used to build and develop generic participant for CCFMaster.
+	More details visit 
+		https://ctf.open.collab.net/sf/wiki/do/viewPage/projects.ccf/wiki/BuildBundleAndPackageCCFMasterWithThirdPartyGenericParticipant
+		https://ctf.open.collab.net/sf/wiki/do/viewPage/projects.ccf/wiki/HowToSetupNewParticipantIntegrationWithCCFMaster
+
+
+For new developers:
+
+	How to setup source code:
+
+		1.CCF-Integration project uses Spring Tool Suite(STS) eclipse(version 2.8 or greater) for development.
+			Download Link -> https://sagan-production.cfapps.io/tools
+		2.Checkout the source code from the repo and import the project as gradle project.
+		3.To install and set up Gradle and its plugin in STS eclipse, Please visit our WIKI link given below.
+			https://ctf.open.collab.net/sf/wiki/do/viewPage/projects.ccf/wiki/BuildBundleAndPackageCCFMasterWithThirdPartyGenericParticipant
+		4.Follow STS eclipse based menu options to import the project.
+			File -> Import -> Gradle -> Gradle project -> select the project -> Build Model ->Finish
+		5.Above said options also works for importing individual plugin i.e.plugins/TFS as a separate project for development.
+		6.Once import Gradle eclipse will automatically resolve the dependencies needed for compiling the project locally in your system.
+
+	To send patch for review to the community:
+
+		1.Make sure your code follows our code style configuration defined.
+		2.Make sure all unit test case followed runs successfully.
+		3.Finally Create a patch and send it to our development mailing list.					
+					
+		
+	Code style configuration:
+	
+		Any java code implemented in CCF-Integration/plugins/<participant-Name> project should  follow java code style conventions defined and used in other CCF projects.
+		So from STS eclipse we have exported the code style formatting configuration into a config file (available as part of this project).
+		Developers need to follow the steps mentioned below to configure and to use it.
+		
+		1.Import the Code style configuration file "ccf-formatter.xml".To import follow steps in STS eclipse.				
+			Window -> Preferences -> Java -> Code Style -> Formatter -> import 
+		2.Also configure Member sort order(this is to align and order variable and methods).Following changes needs to be applied.
+			Window -> Preferences -> Java -> Appearance -> Member Sort Order
+		3.In Member Sort Order dialog window correct sequential order as mentioned below 
+			Types,Fields,Static Fields,Initializers,Static Initializers,Constructor,Methods,Static Methods
+		4.Also in Member Sort Order dialog window enable "Sort members in same category by visibility" option and correct the order as given below.
+			Public,Protected,Private,Default  
+		5.Manually each developer as to format(CTRL+SHIFT+F) the java source code.
+			Select the project -> RightClck ->Source -> Format  
+		6.To sort the order of the members present in the java source code.
+			Select the project -> RightClck ->Source -> Sort Member 					
