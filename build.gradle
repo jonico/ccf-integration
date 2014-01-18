@@ -1,16 +1,9 @@
 apply plugin: 'java'
 
-task exportCCFProjects << {
-    ant.taskdef(resource: 'org/tigris/subversion/svnant/svnantlib.xml') {
-	    classpath {
-	        fileset(dir: 'svnant-1.3.1/lib', includes: '*.jar')
-	    }
-	}
-	ant.svn(javahl: 'false', svnkit:'true',username:ant.properties.svnusername, password:ant.properties.svnpassword, failonerror: 'false') {
-	    ant.export(srcUrl:ant.properties.ccfcoresvnurl, destPath: 'buildCCF/ccfcore')
-	    ant.export(srcUrl:ant.properties.ccfmastersvnurl, destPath: 'buildCCF/CCFMaster')
-	    ant.export(srcUrl:ant.properties.tomcatsvnurl, destPath: 'buildCCF/tomcat7')
-	}
+task exportCCFProjects<< {
+	tasks.cloneCCFMaster.execute()
+	tasks.cloneCCFCore.execute()
+	tasks.cloneCCFTomcat7.execute()
 }
 
 task buildCCFCore {
@@ -158,6 +151,43 @@ task buildCCFMasterGPJar<< {
 			}
 	}
 }
+
+task cloneCCFMaster<< {
+	ant.exec(executable: "git" ,outputproperty:"ccfmasteroutput") {
+        arg(value: 'clone')
+        arg(value: '--branch')
+        arg(value: 'master')
+        arg(value: '--single-branch')
+        arg(value: ant.ccfmasterurl)
+        arg(value: 'buildCCF/CCFMaster')
+    }    
+	println ant.ccfmasteroutput
+}
+
+task cloneCCFCore<< {
+	ant.exec(executable: "git" ,outputproperty:"coreoutput") {
+        arg(value: 'clone')
+        arg(value: '--branch')
+        arg(value: 'master')
+        arg(value: '--single-branch')
+        arg(value: ant.ccfcoreurl)
+        arg(value: 'buildCCF/ccfcore')
+    }
+	println ant.coreoutput
+}
+
+task cloneCCFTomcat7<< {
+	ant.exec(executable: "git" ,outputproperty:"tomcatoutput") {
+        arg(value: 'clone')
+        arg(value: '--branch')
+        arg(value: 'master')
+        arg(value: '--single-branch')
+        arg(value: ant.tomcaturl)
+        arg(value: 'buildCCF/tomcat7')
+    }
+	println ant.tomcatoutput
+}
+
 task mainBuild<< {
 	 tasks.importAndBuildCore.execute() 
 	 tasks.buildCCFMaster.execute() 
@@ -178,7 +208,7 @@ mainBuild.doFirst {
 	}
 }
 
-/*mainBuild.doLast {
+/*mainBuild.doLast { // this will delete clone of git repos
 	delete {
 		delete 'buildCCF'
 	}
