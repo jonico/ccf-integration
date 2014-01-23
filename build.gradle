@@ -156,7 +156,7 @@ task cloneCCFMaster<< {
 	ant.exec(executable: "git" ,outputproperty:"ccfmasteroutput") {
         arg(value: 'clone')
         arg(value: '--branch')
-        arg(value: 'master')
+        arg(value: ant.ccfmasterBranchName)
         arg(value: '--single-branch')
         arg(value: ant.ccfmasterurl)
         arg(value: 'buildCCF/CCFMaster')
@@ -168,7 +168,7 @@ task cloneCCFCore<< {
 	ant.exec(executable: "git" ,outputproperty:"coreoutput") {
         arg(value: 'clone')
         arg(value: '--branch')
-        arg(value: 'master')
+        arg(value: ant.ccfcoreBranchName)
         arg(value: '--single-branch')
         arg(value: ant.ccfcoreurl)
         arg(value: 'buildCCF/ccfcore')
@@ -180,7 +180,7 @@ task cloneCCFTomcat7<< {
 	ant.exec(executable: "git" ,outputproperty:"tomcatoutput") {
         arg(value: 'clone')
         arg(value: '--branch')
-        arg(value: 'master')
+        arg(value: ant.tomcatBranchName)
         arg(value: '--single-branch')
         arg(value: ant.tomcaturl)
         arg(value: 'buildCCF/tomcat7')
