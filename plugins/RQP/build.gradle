@@ -1,0 +1,25 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+group="com.collabnet.ccf.ccfmaster.gp"
+version="0.1.0"
+
+jar {  
+      appendix = 'plugin' 
+} 
+
+repositories {
+	mavenLocal()
+    maven {  url "http://maven.springframework.org/release"  }
+    maven {  url "http://maven.springframework.org/milestone"  }
+    maven {  url "https://nexus.griddynamics.net/nexus/content/groups/public"  }        
+}
+
+dependencies {
+	compile files('../../lib/CCFMaster-RQP-GenericParticipant.jar')
+    compile group: 'org.springframework', name: 'spring-core', version: '3.0.5.RELEASE'
+    compile group: 'org.springframework', name: 'spring-context', version: '3.0.5.RELEASE'
+    compile group: 'com.microsoft.tfs', name: 'sdk', version: '10.1.0'
+    compile group: 'commons-lang', name: 'commons-lang', version: '2.6'
+    compile group: 'commons-collections', name: 'commons-collections', version: '3.1'
+}

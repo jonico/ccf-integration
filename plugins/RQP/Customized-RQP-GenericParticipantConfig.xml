@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+	
+	<bean id="genericParticipant" class="com.collabnet.ccf.ccfmaster.gp.model.GenericParticipantFacade" >
+		<!-- name property should hold full name of the participant (e.g. "HP Quality Center","ScrumWorks Pro");
+		 this value is used to display  in the admin screen menu -->
+		<property name="name" value="IBM Rational Requisite Pro (vltm)"/>
+		<!-- prefix property should hold short Name of the participant (e.g. "QC","SWP");
+		 this value is used set as participant prefix and systemId ; Also used to display in header labels -->
+		<property name="prefix" value="RQP"/>
+		<property name="genericParticipantConfigItemFactory" ref="genericParticipantConfigItemFactory"/>
+		<property name="genericParticipantRMDFactory" ref="genericParticipantRMDFactory"/>
+	</bean>
+	
+	<bean id="genericParticipantConfigItemFactory" class="com.collabnet.ccf.ccfmaster.gp.model.GenericParticipantConfigItemFactory">	
+		<property name="participantFieldList">
+			<list value-type="com.collabnet.ccf.ccfmaster.server.domain.CCFCoreProperty">
+				<ref bean="rqpParticipantShare" />
+				<ref bean="rqpParticipantUsername" />
+				<ref bean="rqpParticipantPassword" />
+				<ref bean="rqpParticipantProjectDatepattern" />
+				<ref bean="rqpParticipantRequirementDatepattern" />
+				<ref bean="rqpParticipantRevisionDatepattern" />
+				<ref bean="rqpParticipantQueryDatepattern"/>
+			</list>
+		</property>
+		<property name="landscapeFieldList">
+			<list value-type="com.collabnet.ccf.ccfmaster.server.domain.CCFCoreProperty">
+			</list>
+		</property>
+	</bean>
+		
+	<bean id="genericParticipantRMDFactory" class="com.collabnet.ccf.ccfmaster.gp.model.GenericParticipantRMDFactory">	
+		<property name="participantSelectorFieldList">
+			<list value-type="com.collabnet.ccf.ccfmaster.server.domain.CCFCoreProperty">
+				<ref bean="rqpDirectoryProperty" />
+				<ref bean="rqpRqsFileProperty" />
+				<ref bean="rqpReqTypeProperty" />
+				<ref bean="rqpPackageProperty" />
+			</list>
+		</property>
+		<property name="customParticipantRMD" ref="customParticipantRMD"/>
+	</bean>
+	
+	<bean id="customParticipantRMD" class="com.collabnet.ccf.ccfmaster.gp.web.rmd.DefaultCustomRMDParticipant"/> 
+	
+	<bean id="rqpParticipantShare" class="com.collabnet.ccf.ccfmaster.server.domain.CCFCoreProperty">
+		<!--  name property should be unique --> 
+		<property name="name" value="ccf.participant.rqp.share"/>
+		<property name="labelName" value="RQP share base path"/>
+		<property name="systemKind" value="GENERIC"/>
+		<property name="type" value="STRING"/>
+		<property name="displayInHTML" value="true"/>
+	</bean>
+	
+	<bean id="rqpParticipantUsername" class="com.collabnet.ccf.ccfmaster.server.domain.CCFCoreProperty">
+		<!--  name property should be unique  -->
+		<property name="name" value="ccf.participant.rqp.username"/>
+		<property name="labelName" value="Username"/>
+		<property name="systemKind" value="GENERIC"/>
+		<property name="type" value="STRING"/>
+		<property name="displayInHTML" value="true"/>
+	</bean>
+
+	<bean id="rqpParticipantQueryDatepattern" class="com.collabnet.ccf.ccfmaster.server.domain.CCFCoreProperty">
+		<!--  name property should be unique  -->
+		<property name="name" value="ccf.participant.rqp.querydatepattern"/>
+		<property name="labelName" value="ReqPro Query Date Pattern (default 'yyyy-MM-dd HH:mm:ss')"/>
+		<property name="systemKind" value="GENERIC"/>
+		<property name="type" value="STRING"/>
+		<property name="displayInHTML" value="true"/>
+	</bean>
+
+	<bean id="rqpParticipantProjectDatepattern" class="com.collabnet.ccf.ccfmaster.server.domain.CCFCoreProperty">
+		<!--  name property should be unique  -->
+		<property name="name" value="ccf.participant.rqp.projectdatepattern"/>
+		<property name="labelName" value="Project Date Pattern (default 'MM/dd/yyyy HH:mm:ss')"/>
+		<property name="systemKind" value="GENERIC"/>
+		<property name="type" value="STRING"/>
+		<property name="displayInHTML" value="true"/>
+	</bean>
+
+	<bean id="rqpParticipantRevisionDatepattern" class="com.collabnet.ccf.ccfmaster.server.domain.CCFCoreProperty">
+		<!--  name property should be unique  -->
+		<property name="name" value="ccf.participant.rqp.revisiondatepattern"/>
+		<property name="labelName" value="Revision Date Pattern (default 'MM/dd/yyyy HH:mm:ss')"/>
+		<property name="systemKind" value="GENERIC"/>
+		<property name="type" value="STRING"/>
+		<property name="displayInHTML" value="true"/>
+	</bean>
+
+	<bean id="rqpParticipantRequirementDatepattern" class="com.collabnet.ccf.ccfmaster.server.domain.CCFCoreProperty">
+		<!--  name property should be unique  -->
+		<property name="name" value="ccf.participant.rqp.requirementdatepattern"/>
+		<property name="labelName" value="Requirement Date Pattern (default 'MM/dd/yyyy HH:mm:ss')"/>
+		<property name="systemKind" value="GENERIC"/>
+		<property name="type" value="STRING"/>
+		<property name="displayInHTML" value="true"/>
+	</bean>
+
+	<bean id="rqpParticipantPassword" class="com.collabnet.ccf.ccfmaster.server.domain.CCFCoreProperty">
+		 <!-- name property should be unique  -->
+		<property name="name" value="ccf.participant.rqp.password"/>
+		<property name="labelName" value="Password"/>
+		<property name="systemKind" value="GENERIC"/>
+		<property name="type" value="PASSWORD"/>
+		<property name="displayInHTML" value="true"/>
+	</bean>
+	 
+	<bean id="rqpDirectoryProperty" class="com.collabnet.ccf.ccfmaster.server.domain.CCFCoreProperty">
+		<!--  name property should be unique  -->
+		<property name="name" value="rqpDirectory"/>
+		<property name="labelName" value="RQP Project Directory (located in base share)"/>
+		<property name="systemKind" value="GENERIC"/>
+		<property name="type" value="STRING"/>
+		<property name="conditionalRegex" value="^*[^-]*$"/>
+		<property name="displayInHTML" value="true"/>
+	</bean>
+	 
+	<bean id="rqpRqsFileProperty" class="com.collabnet.ccf.ccfmaster.server.domain.CCFCoreProperty">
+		 <!-- name property should be unique  -->
+		<property name="name" value="rqpRqsName"/>
+		<property name="labelName" value="RQP Project File Name (without rqs extension)"/>
+		<property name="systemKind" value="GENERIC"/>
+		<property name="type" value="STRING"/>
+		<property name="conditionalRegex" value="^*[^-]*$"/>
+		<property name="displayInHTML" value="true"/>
+	</bean>
+		
+	<bean id="rqpReqTypeProperty" class="com.collabnet.ccf.ccfmaster.server.domain.CCFCoreProperty">
+		 <!-- name property should be unique  -->
+		<property name="name" value="rqpType"/>
+		<property name="labelName" value="RQP Requirement Type (PACKAGE or Requirement Type)"/>
+		<property name="systemKind" value="GENERIC"/>
+		<property name="type" value="STRING"/>
+		<property name="conditionalRegex" value="^*[^-]*$"/>
+		<property name="displayInHTML" value="true"/>
+	</bean>
+
+	<bean id="rqpPackageProperty" class="com.collabnet.ccf.ccfmaster.server.domain.CCFCoreProperty">
+		 <!-- name property should be unique  -->
+		<property name="name" value="rqpPackage"/>
+		<property name="labelName" value="RQP Base Package (case sensitive name, has to be unique)"/>
+		<property name="systemKind" value="GENERIC"/>
+		<property name="type" value="STRING"/>
+		<property name="conditionalRegex" value="^*[^-]*$"/>
+		<property name="displayInHTML" value="true"/>
+	</bean>
+
+</beans>
