@@ -18,6 +18,7 @@ task buildCCFCore {
 		tasks.buildtfplugin.execute()
 		tasks.buildParticipantplugin.execute()
 		tasks.copyCoreConfigFile.execute()
+		tasks.createcoreversion.execute()
 		tasks.package.execute()
 		tasks.deployHudson.execute()
 	}	
@@ -123,6 +124,12 @@ task loadPropertyValues<< {
 		*/
 		def participantPropFile = "plugins/"+participantName+"/gradleConfig-"+participantName+".properties"
 		ant.loadproperties(srcfile:participantPropFile)
+	}
+	
+	if(project.hasProperty('customCoreBuildNumber')){
+		ant.properties['env.BUILD_NUMBER']=customCoreBuildNumber
+	} else {
+		ant.properties['env.BUILD_NUMBER']='0000'
 	}
 }
 
