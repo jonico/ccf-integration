@@ -36,7 +36,7 @@
 	<ccfcoreproperty category="coreSettings" systemKind="GENERIC"
 		type="INTEGER" direction="FORWARD" value="1000"
 		name="ccf.direction.tf.sleepinterval" labelName="Sleep Interval"
-		toolTip="Time to sleep (in seconds) before starting a new poll requests if no outstanding artifacts are in the synch queue." />
+		toolTip="Time to sleep (in milliseconds) before starting a new poll requests if no outstanding artifacts are in the synch queue." />
 	<ccfcoreproperty category="coreSettings" systemKind="GENERIC"
 		type="INTEGER" direction="FORWARD" value="10485760"
 		name="ccf.direction.tf.max.attachmentsize" labelName="Max Attachment Size"
@@ -44,7 +44,7 @@
 	<ccfcoreproperty category="coreSettings" systemKind="GENERIC"
 		type="INTEGER" direction="REVERSE" value="250"
 		name="ccf.direction.rqp.sleepinterval" labelName="Sleep Interval"
-		toolTip="Time to sleep (in seconds) before starting a new poll requests if no outstanding artifacts are in the synch queue." />
+		toolTip="Time to sleep (in milliseconds) before starting a new poll requests if no outstanding artifacts are in the synch queue." />
 	<ccfcoreproperty category="coreSettings" systemKind="GENERIC"
 		type="INTEGER" direction="REVERSE" value="10485760"
 		name="ccf.direction.rqp.max.attachmentsize" labelName="Max Attachment Size"
