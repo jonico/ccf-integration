@@ -98,12 +98,12 @@ task copyandzipWar {
 			from('buildCCF/CCFMaster/target/') {
 		   		include 'CCFMaster.war'
 		   	}
-		   	into 'buildCCF/tomcat7/apache-tomcat-7.0.14/webapps/'
+		   	into 'buildCCF/tomcat7/apache-tomcat-7.0.53/webapps/'
 		}
 	}
 	doLast{
-		ant.zip(destfile: 'distributions/apache-tomcat-7.0.14.zip') {
-	        fileset(dir: 'buildCCF/tomcat7/apache-tomcat-7.0.14/') 
+		ant.zip(destfile: 'distributions/apache-tomcat-7.0.53.zip') {
+	        fileset(dir: 'buildCCF/tomcat7/apache-tomcat-7.0.53/') 
 	    }
     }
 }
