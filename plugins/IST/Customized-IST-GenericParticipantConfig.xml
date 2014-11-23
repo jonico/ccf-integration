@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+	
+	<bean id="genericParticipant" class="com.collabnet.ccf.ccfmaster.gp.model.GenericParticipantFacade" >
+		<!-- name property should hold full name of the participant (e.g. "HP Quality Center","ScrumWorks Pro");
+		 this value is used to display  in the admin screen menu -->
+		<property name="name" value="Inflectra SpiraTest"/>
+		<!-- prefix property should hold short Name of the participant (e.g. "QC","SWP");
+		 this value is used set as participant prefix and systemId ; Also used to display in header labels -->
+		<property name="prefix" value="IST"/>
+		<property name="genericParticipantConfigItemFactory" ref="genericParticipantConfigItemFactory"/>
+		<property name="genericParticipantRMDFactory" ref="genericParticipantRMDFactory"/>
+	</bean>
+	
+	<bean id="genericParticipantConfigItemFactory" class="com.collabnet.ccf.ccfmaster.gp.model.GenericParticipantConfigItemFactory">	
+		<property name="participantFieldList">
+			<list value-type="com.collabnet.ccf.ccfmaster.server.domain.CCFCoreProperty">
+				<ref bean="istParticipantServer" />
+				<ref bean="istParticipantUsername" />
+				<ref bean="istParticipantPassword" />
+			</list>
+		</property>
+		<property name="landscapeFieldList">
+			<list value-type="com.collabnet.ccf.ccfmaster.server.domain.CCFCoreProperty">
+			</list>
+		</property>
+	</bean>
+		
+	<bean id="genericParticipantRMDFactory" class="com.collabnet.ccf.ccfmaster.gp.model.GenericParticipantRMDFactory">	
+		<property name="participantSelectorFieldList">
+			<list value-type="com.collabnet.ccf.ccfmaster.server.domain.CCFCoreProperty">
+				<ref bean="istProjectID" />
+				<ref bean="istIncidentType" />
+			</list>
+		</property>
+		<property name="customParticipantRMD" ref="customParticipantRMD"/>
+	</bean>
+	
+	<bean id="customParticipantRMD" class="com.collabnet.ccf.ccfmaster.gp.web.rmd.DefaultCustomRMDParticipant"/> 
+	
+	<bean id="istParticipantServer" class="com.collabnet.ccf.ccfmaster.server.domain.CCFCoreProperty">
+		<!--  name property should be unique --> 
+		<property name="name" value="ccf.participant.ist.server"/>
+		<property name="labelName" value="SpiraTest Server URL"/>
+		<property name="systemKind" value="GENERIC"/>
+		<property name="type" value="STRING"/>
+		<property name="displayInHTML" value="true"/>
+	</bean>
+	
+	<bean id="istParticipantUsername" class="com.collabnet.ccf.ccfmaster.server.domain.CCFCoreProperty">
+		<!--  name property should be unique  -->
+		<property name="name" value="ccf.participant.ist.username"/>
+		<property name="labelName" value="CCF Connector Username"/>
+		<property name="systemKind" value="GENERIC"/>
+		<property name="type" value="STRING"/>
+		<property name="displayInHTML" value="true"/>
+	</bean>
+
+	<bean id="istParticipantPassword" class="com.collabnet.ccf.ccfmaster.server.domain.CCFCoreProperty">
+		 <!-- name property should be unique  -->
+		<property name="name" value="ccf.participant.ist.password"/>
+		<property name="labelName" value="CCF Connector Password"/>
+		<property name="systemKind" value="GENERIC"/>
+		<property name="type" value="PASSWORD"/>
+		<property name="displayInHTML" value="true"/>
+	</bean>
+	 
+	<bean id="istProjectID" class="com.collabnet.ccf.ccfmaster.server.domain.CCFCoreProperty">
+		 <!-- name property should be unique  -->
+		<property name="name" value="istProjectId"/>
+		<property name="labelName" value="Project ID"/>
+		<property name="systemKind" value="GENERIC"/>
+		<property name="type" value="STRING"/>
+		<property name="conditionalRegex" value="^\d+$"/>
+
+	<bean id="istIncidentType" class="com.collabnet.ccf.ccfmaster.server.domain.CCFCoreProperty">
+		 <!-- name property should be unique  -->
+		<property name="name" value="istIncidentType"/>
+		<property name="labelName" value="Incident Type"/>
+		<property name="systemKind" value="GENERIC"/>
+		<property name="type" value="STRING"/>
+		<property name="conditionalRegex" value="^*[^-]*$"/>
+		<property name="displayInHTML" value="true"/>
+	</bean>
+
+
+</beans>
