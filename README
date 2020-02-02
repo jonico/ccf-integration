@@ -1,5 +1,5 @@
 Project:
-	CCF-Integration is a gradle based project used to build and develop generic participant for CCFMaster.
+	CCF-Integration is a gradle-based project used to build and develop generic participant for CCFMaster.
 	More details visit 
 		https://ctf.open.collab.net/sf/wiki/do/viewPage/projects.ccf/wiki/BuildBundleAndPackageCCFMasterWithThirdPartyGenericParticipant
 		https://ctf.open.collab.net/sf/wiki/do/viewPage/projects.ccf/wiki/HowToSetupNewParticipantIntegrationWithCCFMaster
